@@ -1,16 +1,15 @@
-﻿using System.Configuration;
-using System.Collections.Specialized;
+﻿using CodingTracker.fatihskalemci.Models;
+using Dapper;
+using Spectre.Console;
+using System.Configuration;
 using System.Data.SQLite;
 using System.Globalization;
-using CodingTracker.fatihskalemci.Models;
-using Spectre.Console;
-using Dapper;
 
 namespace CodingTracker.fatihskalemci;
 
 internal class DataBaseConnection
 {
-    private readonly string connectionString = ConfigurationManager.AppSettings.Get("connectionString");
+    private readonly string connectionString = ConfigurationManager.ConnectionStrings["DBSQLite"].ConnectionString;
 
     public void CreateTable()
     {
@@ -47,7 +46,7 @@ internal class DataBaseConnection
             connection.Close();
         }
     }
-        
+
     internal void DeleteSession()
     {
         List<CodingSession> sessions = GetSessions();
@@ -92,7 +91,7 @@ internal class DataBaseConnection
 
         foreach (var session in sessions)
         {
-            table.AddRow(session.StartTime.ToString("yyyy-MM-dd HH:mm"),$"{session.Duration.Hours} Hours {session.Duration.Minutes} Minutes", session.EndTime.ToString("yyyy-MM-dd HH:mm"));
+            table.AddRow(session.StartTime.ToString("yyyy-MM-dd HH:mm"), $"{session.Duration.Hours} Hours {session.Duration.Minutes} Minutes", session.EndTime.ToString("yyyy-MM-dd HH:mm"));
         }
         AnsiConsole.Write(table);
         Console.ReadKey();

@@ -42,6 +42,8 @@ internal class UserInterface
                 case MenuOptions.ShowReport:
                     break;
                 case MenuOptions.StopWatch:
+                    session = Helpers.StopWatchSession();
+                    dataBase.AddSession(session);
                     break;
                 case MenuOptions.Exit:
                     exit = true;
