@@ -8,8 +8,23 @@ internal class Enums
         UpdateSession,
         DeleteSession,
         ShowSessions,
-        ShowReport,
+        Reports,
         StopWatch,
+        SetCodingGoal,
         Exit
+    }
+
+    internal enum ReportOptions
+    {
+        FullReport,
+        Filter,
+
+    }
+
+    internal enum FilterOptions
+    {
+        Day,
+        Week,
+        Year
     }
 }

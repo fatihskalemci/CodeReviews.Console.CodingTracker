@@ -183,4 +183,9 @@ internal class DataBaseConnection
 
         return sessions;
     }
+
+    internal void ShowReport()
+    {
+
+    }
 }
