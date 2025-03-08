@@ -115,6 +115,7 @@ class Helpers
 
         Console.WriteLine("\nPress the Enter key to start the session\n");
         Console.ReadLine();
+        DrawTime(TimeCount);
 
         aTimer = new System.Timers.Timer(1000);
         aTimer.Elapsed += OnTimedEvent;

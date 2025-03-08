@@ -136,7 +136,7 @@ internal class DataBaseConnection
         }
     }
 
-    internal List<CodingSession> GetSessions(string sortedBy = "")
+    internal List<CodingSession> GetSessions(string sortedBy = "", string filterBy = "")
     {
         List<CodingSession> sessions = [];
 
@@ -144,27 +144,28 @@ internal class DataBaseConnection
         {
             string sql;
 
-            switch (sortedBy)
+            string orderClause = sortedBy switch
             {
-                case "start":
-                    sql = @"SELECT * FROM coding_sessions
-                            ORDER BY
-                            Start ASC;";
-                    break;
-                case "end":
-                    sql = @"SELECT * FROM coding_sessions
-                            ORDER BY
-                            End ASC;";
-                    break;
-                case "duration":
-                    sql = @"SELECT * FROM coding_sessions
-                            ORDER BY
-                            Duration DESC;";
-                    break;
-                default:
-                    sql = "SELECT * FROM coding_sessions";
-                    break;
-            }
+                "start" => @"ORDER BY
+                            Start ASC",
+                "end" => @"ORDER BY
+                            End ASC",
+                "duration" => @"ORDER BY
+                            Duration DESC",
+                _ => "",
+            };
+
+            string filterClause = filterBy switch
+            {
+                "day" => "",
+                "month" => "",
+                "year" => "",
+                _ => "",
+            };
+
+            sql = $@"SELECT * FROM coding_sessions
+                   {orderClause}
+                   {filterClause}";
 
             connection.Open();
             var reader = connection.ExecuteReader(sql);
@@ -184,8 +185,26 @@ internal class DataBaseConnection
         return sessions;
     }
 
-    internal void ShowReport()
+    internal void ShowReport(string reportType = "full")
     {
+        List<CodingSession> rawSessions = GetSessions("start");
+        GetDurationSum();
 
+
+
+    }
+
+    internal void GetDurationSum()
+    {
+        var sql = @"SELECT SUM(Duration) FROM coding_sessions
+                    WHERE Start LIKE '2025-01%'";
+
+        using (var connection = new SQLiteConnection(connectionString))
+        {
+            int sum = connection.ExecuteScalar<int>(sql);
+            Console.WriteLine(sum);
+            Console.ReadKey();
+            connection.Close();
+        }
     }
 }

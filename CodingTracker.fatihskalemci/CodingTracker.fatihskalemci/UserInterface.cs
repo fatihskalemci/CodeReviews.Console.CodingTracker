@@ -61,8 +61,32 @@ internal class UserInterface
                 .Title("Please select the action you want to perform")
                 .AddChoices(Enum.GetValues<ReportOptions>()));
 
+        switch (reportSelection)
+        {
+            case ReportOptions.Filter:
+                FilterMenu();
+                break;
+            case ReportOptions.FullReport:
+                dataBase.ShowReport();
+                break;
+        }
+    }
+
+    internal void FilterMenu()
+    {
         var filterSelection = AnsiConsole.Prompt(new SelectionPrompt<FilterOptions>()
                 .Title("Please select the action you want to perform")
                 .AddChoices(Enum.GetValues<FilterOptions>()));
+
+        switch (filterSelection)
+        {
+            case FilterOptions.Day:
+                break;
+            case FilterOptions.Week:
+                break;
+            case FilterOptions.Year:
+                break;
+        }
+
     }
 }
