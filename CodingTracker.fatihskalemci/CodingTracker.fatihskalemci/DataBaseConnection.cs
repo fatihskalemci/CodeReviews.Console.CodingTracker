@@ -188,22 +188,45 @@ internal class DataBaseConnection
     internal void ShowReport(string reportType = "full")
     {
         List<CodingSession> rawSessions = GetSessions("start");
-        GetDurationSum();
+        //https://stackoverflow.com/questions/13819769/sql-select-values-sum-same-id
+
+        GetDurationSum(DateTime.Now, "yearly");
+        GetDurationSum(DateTime.Now, "monthly");
+        GetDurationSum(DateTime.Now, "daily");
+        GetDurationSum(DateTime.Now);
+        Console.ReadKey();
 
 
 
     }
 
-    internal void GetDurationSum()
+    internal void GetDurationSum(DateTime date, string period = "total")
     {
-        var sql = @"SELECT SUM(Duration) FROM coding_sessions
-                    WHERE Start LIKE '2025-01%'";
+        string filterPeriod;
+
+        switch (period)
+        {
+            case "monthly":
+                filterPeriod = $"{date:yyyy-MM}";
+                break;
+            case "daily":
+                filterPeriod = $"{date:yyyy-MM-dd}";
+                break;
+            case "yearly":
+                filterPeriod = $"{date:yyyy}";
+                break;
+            default:
+                filterPeriod = "";
+                break;
+        }
+
+        var sql = @$"SELECT SUM(Duration) FROM coding_sessions
+                    WHERE Start LIKE '{filterPeriod}%'";
 
         using (var connection = new SQLiteConnection(connectionString))
         {
             int sum = connection.ExecuteScalar<int>(sql);
             Console.WriteLine(sum);
-            Console.ReadKey();
             connection.Close();
         }
     }
