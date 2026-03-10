@@ -5,13 +5,13 @@ using static CodingTracker.fatihskalemci.Enums;
 
 namespace CodingTracker.fatihskalemci;
 
-internal class UserInterface
+internal class UserInterface(string connectionString)
 {
-    private readonly DataBaseConnection dataBase = new();
+    private readonly DataBaseConnection _dataBase = new(connectionString);
 
     internal void MainMenu()
     {
-        dataBase.CreateTable();
+        _dataBase.CreateTable();
 
         bool exit = false;
 
@@ -28,23 +28,23 @@ internal class UserInterface
             {
                 case MenuOptions.AddSession:
                     session = Helpers.GetSessionFromUser();
-                    dataBase.AddSession(session);
+                    _dataBase.AddSession(session);
                     break;
                 case MenuOptions.UpdateSession:
-                    dataBase.UpdateSession();
+                    _dataBase.UpdateSession();
                     break;
                 case MenuOptions.DeleteSession:
-                    dataBase.DeleteSession();
+                    _dataBase.DeleteSession();
                     break;
                 case MenuOptions.ShowSessions:
-                    dataBase.ShowSessions();
+                    _dataBase.ShowSessions();
                     break;
                 case MenuOptions.Reports:
                     ReportMenu();
                     break;
                 case MenuOptions.StopWatch:
                     session = Helpers.StopWatchSession();
-                    dataBase.AddSession(session);
+                    _dataBase.AddSession(session);
                     break;
                 case MenuOptions.SetCodingGoal:
                     break;
@@ -67,7 +67,7 @@ internal class UserInterface
                 FilterMenu();
                 break;
             case ReportOptions.FullReport:
-                dataBase.ShowReport();
+                _dataBase.ShowReport();
                 break;
         }
     }

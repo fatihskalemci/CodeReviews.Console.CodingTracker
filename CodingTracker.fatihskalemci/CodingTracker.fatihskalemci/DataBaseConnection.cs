@@ -7,13 +7,13 @@ using System.Globalization;
 
 namespace CodingTracker.fatihskalemci;
 
-internal class DataBaseConnection
+internal class DataBaseConnection(string connectionString)
 {
-    private readonly string connectionString = ConfigurationManager.ConnectionStrings["DBSQLite"].ConnectionString;
+    private readonly string _connectionString = connectionString;
 
     public void CreateTable()
     {
-        using (var connection = new SQLiteConnection(connectionString))
+        using (var connection = new SQLiteConnection(_connectionString))
         {
             var sql = @"CREATE TABLE IF NOT EXISTS coding_sessions(
                         Id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -29,7 +29,7 @@ internal class DataBaseConnection
 
     internal void AddSession(CodingSession session)
     {
-        using (var connection = new SQLiteConnection(connectionString))
+        using (var connection = new SQLiteConnection(_connectionString))
         {
             var sql = @"INSERT INTO coding_sessions (Start, End, Duration)
                         VALUES (@Start, @End, @Duration)";
@@ -63,7 +63,7 @@ internal class DataBaseConnection
                                 .UseConverter(s => $"{s.StartTime:yyyy-MM-dd HH:mm} | {s.EndTime:yyyy-MM-dd HH:mm} | {s.Duration.Hours} Hours {s.Duration.Minutes} Minutes")
                                 .AddChoices(sessions));
 
-        using (var connection = new SQLiteConnection(connectionString))
+        using (var connection = new SQLiteConnection(_connectionString))
         {
             var sql = @"DELETE FROM coding_sessions
                         WHERE Id = @Id";
@@ -116,7 +116,7 @@ internal class DataBaseConnection
 
         var newSession = Helpers.GetSessionFromUser();
 
-        using (var connection = new SQLiteConnection(connectionString))
+        using (var connection = new SQLiteConnection(_connectionString))
         {
             var sql = @"UPDATE coding_sessions
                         SET Start = @Start, End = @End, Duration = @Duration
@@ -140,7 +140,7 @@ internal class DataBaseConnection
     {
         List<CodingSession> sessions = [];
 
-        using (var connection = new SQLiteConnection(connectionString))
+        using (var connection = new SQLiteConnection(_connectionString))
         {
             string sql;
 
@@ -223,7 +223,7 @@ internal class DataBaseConnection
         var sql = @$"SELECT SUM(Duration) FROM coding_sessions
                     WHERE Start LIKE '{filterPeriod}%'";
 
-        using (var connection = new SQLiteConnection(connectionString))
+        using (var connection = new SQLiteConnection(_connectionString))
         {
             int sum = connection.ExecuteScalar<int>(sql);
             Console.WriteLine(sum);
